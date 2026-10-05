@@ -1,0 +1,21 @@
+{% extends 'master/base.html' %}
+{% block content %}
+<div class="row">
+{% for news in news_list %}
+  <div class="col-md-4 mb-4">
+    <div class="card">
+      {% if news.thumbnail %}
+        <img src="{{ news.thumbnail.url }}" class="card-img-top" style="height:200px; object-fit:cover;">
+      {% endif %}
+      <div class="card-body">
+        <h5>{{ news.title }}</h5>
+        <p class="text-muted">{{ news.author }} | {{ news.published_date|date:"M d, Y" }}</p>
+        <a href="{% url 'news_detail' news.pk %}" class="btn btn-primary btn-sm">Read More</a>
+      </div>
+    </div>
+  </div>
+{% empty %}
+  <p>No news yet.</p>
+{% endfor %}
+</div>
+{% endblock %}

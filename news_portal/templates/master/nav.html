@@ -1,0 +1,18 @@
+<nav class="navbar navbar-dark bg-dark navbar-expand-lg">
+  <div class="container">
+    <a class="navbar-brand" href="{% url 'home' %}">NewsPortal</a>
+    <div class="ms-auto">
+      {% if user.is_authenticated %}
+        <a href="{% url 'news_create' %}" class="btn btn-sm btn-success">Create</a>
+        <span class="text-white mx-2">{{ user.username }}</span>
+        <form action="{% url 'logout' %}" method="post" class="d-inline">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-sm btn-danger">Logout</button>
+        </form>
+      {% else %}
+        <a href="{% url 'login' %}" class="btn btn-sm btn-primary">Login</a>
+        <a href="{% url 'register' %}" class="btn btn-sm btn-warning">Register</a>
+      {% endif %}
+    </div>
+  </div>
+</nav>
