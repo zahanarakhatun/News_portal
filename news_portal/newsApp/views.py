@@ -2,13 +2,33 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth import login
-from .models import News
+from .models import News,Category
 from .forms import NewsForm, RegisterForm
+from django.db.models import Q
+from django.core.paginator import Paginator
 
 # Create your views here.
 def home(request):
-    news_list = News.objects.all()
-    return render(request, 'home.html', {'news_list': news_list})
+    query = request.GET.get('q', '')
+    cat_id = request.GET.get('category')
+    news_list = News.objects.all().order_by('-published_date')
+    categories = Category.objects.all()
+
+    if query:
+        news_list = news_list.filter(
+            Q(title__icontains=query) | Q(content__icontains=query)
+        )
+    if cat_id:
+        news_list = news_list.filter(category__id=cat_id)
+
+    paginator = Paginator(news_list, 6)
+    page_obj = paginator.get_page(request.GET.get('page'))
+
+    return render(request, 'home.html', {
+        'page_obj': page_obj,
+        'query': query,
+        'categories': categories
+    })
 
 def news_detail(request, pk):
     news = get_object_or_404(News, pk=pk)
